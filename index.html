@@ -75,92 +75,42 @@
     font-size: 18px;
     color: #1c3f60;
   }
-</style>
-</head>
-
-<body>
-
-<!-- PREVIEW CARD -->
-<div class="card" id="preview">
-  <div class="header">
-    <img id="logo" class="logo" alt="Company Logo">
-    <h2 id="name">Loading...</h2>
-    <div id="title"></div>
-  </div>
-
-  <img id="profileImage" class="profile">
-
-  <div class="body">
-    <div class="info"><span>Company:</span> <span id="company"></span></div>
-    <div class="info"><span>Phone:</span> <span id="phone"></span></div>
-    <div class="info"><span>Email:</span> <span id="email"></span></div>
-    <div class="info"><span>Website:</span> <span id="website"></span></div>
-    <div class="info"><span>Address:</span> <span id="address"></span></div>
-
-    <div class="btn" onclick="generateVCF()">Save Contact</div>
-  </div>
-</div>
-
-<!-- SAVING SCREEN -->
-<div class="saving" id="saving">
-  Saving contact…<br>Please wait
-</div>
-
 <script>
-let contactData = {};
+document.addEventListener('DOMContentLoaded', function () {
 
-// Load JSON
-fetch('contact.json')
-  .then(res => res.json())
-  .then(data => {
-    contactData = data;
+  fetch('./contact.json')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('JSON fetch failed: ' + response.status);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('JSON loaded successfully:', data);
 
-    document.getElementById('name').innerText =
-      data.firstName + " " + data.lastName;
-    document.getElementById('title').innerText = data.title;
-    document.getElementById('company').innerText = data.company;
-    document.getElementById('phone').innerText = data.phone;
-    document.getElementById('email').innerText = data.email;
-    document.getElementById('website').innerText = data.website;
-    document.getElementById('address').innerText = data.address;
-    document.getElementById('profileImage').src = data.profileImage;
-    document.getElementById('logo').src = data.logo;
-  });
+      document.getElementById('name').textContent =
+        data.firstName + " " + data.lastName;
 
-// Generate VCF dynamically
-function generateVCF() {
-  document.getElementById('preview').style.display = 'none';
-  document.getElementById('saving').style.display = 'block';
+      document.getElementById('title').textContent = data.title;
+      document.getElementById('company').textContent = data.company;
+      document.getElementById('phone').textContent = data.phone;
+      document.getElementById('email').textContent = data.email;
+      document.getElementById('website').textContent = data.website;
+      document.getElementById('address').textContent = data.address;
 
-  const vcf = `
-BEGIN:VCARD
-VERSION:3.0
-N:${contactData.lastName};${contactData.firstName};;;
-FN:${contactData.firstName} ${contactData.lastName}
-ORG:${contactData.company}
-TITLE:${contactData.title}
-TEL;TYPE=CELL:${contactData.phone}
-EMAIL:${contactData.email}
-URL:${contactData.website}
-ADR;TYPE=WORK:;;${contactData.address}
-END:VCARD`.trim();
+      document.getElementById('profileImage').src = data.profileImage;
 
-  const blob = new Blob([vcf], { type: 'text/vcard' });
-  const url = URL.createObjectURL(blob);
+      if (data.logo && document.getElementById('logo')) {
+        document.getElementById('logo').src = data.logo;
+      }
+    })
+    .catch(error => {
+      console.error('ERROR:', error);
+      document.getElementById('name').textContent = 'Error loading contact';
+    });
 
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'contact.vcf';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
-  setTimeout(() => {
-    document.getElementById('saving').innerHTML =
-      "Contact opened in your contacts app";
-  }, 2500);
-}
+});
 </script>
-
 </body>
 </html>
+
