@@ -122,25 +122,9 @@ fetch('contact.json')
     console.error(err);
   });
 
-// Save contact
-function saveContact() {
-  document.getElementById('previewCard').style.display = 'none';
-  document.getElementById('savingScreen').style.display = 'block';
-
-  const a = document.createElement('a');
-  a.href = 'contact.vcf';
-  a.download = 'contact.vcf';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
-  setTimeout(() => {
-    document.getElementById('savingScreen').innerHTML =
-      "Contact opened in your contacts app";
-  }, 2500);
-}
 </script>
 
 </body>
 </html>
+
 
