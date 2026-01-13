@@ -1,44 +1,146 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Debug Contact</title>
+<meta charset="UTF-8">
+<title>Contact Preview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #eef2f6;
+  }
+
+  .card {
+    max-width: 420px;
+    margin: 40px auto;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .header {
+    background: #1c3f60;
+    padding: 30px 20px 60px;
+    color: #fff;
+  }
+
+  .profile {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #fff;
+    margin-top: -55px;
+  }
+
+  .body {
+    padding: 20px;
+    text-align: left;
+  }
+
+  .info {
+    margin: 10px 0;
+    font-size: 15px;
+  }
+
+  .info span {
+    font-weight: bold;
+    color: #1c3f60;
+  }
+
+  .btn {
+    margin-top: 20px;
+    padding: 14px;
+    background: #1c3f60;
+    color: #fff;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .saving {
+    display: none;
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+    color: #1c3f60;
+  }
+</style>
 </head>
+
 <body>
 
-<h1 id="name">Loading...</h1>
-<p id="title"></p>
-<p id="company"></p>
-<p id="phone"></p>
-<p id="email"></p>
-<p id="website"></p>
-<p id="address"></p>
-<img id="profileImage" width="150">
-<img id="logo" width="70">
+<!-- PREVIEW CARD -->
+<div class="card" id="previewCard">
+  <div class="header">
+    <h2 id="name">Loading...</h2>
+    <img id="logo" class="logo" alt="Company Logo">
+    <div id="title"></div>
+  </div>
+
+  <img id="profileImage" class="profile" src="" alt="Profile Photo">
+
+  <div class="body">
+    <div class="info"><span>Company:</span> <span id="company"></span></div>
+    <div class="info"><span>Phone:</span> <span id="phone"></span></div>
+    <div class="info"><span>Email:</span> <span id="email"></span></div>
+    <div class="info"><span>Website:</span> <span id="website"></span></div>
+    <div class="info"><span>Address:</span> <span id="address"></span></div>
+
+    <div class="btn" onclick="saveContact()">Save Contact</div>
+  </div>
+</div>
+
+<!-- SAVING SCREEN -->
+<div class="saving" id="savingScreen">
+  Saving contact…<br>Please wait
+</div>
+
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  fetch('./contact.json')
-    .then(r => r.json())
-    .then(data => {
-      document.getElementById('name').textContent =
-        data.firstName + " " + data.lastName;
-      document.getElementById('title').textContent = data.title;
-      document.getElementById('company').textContent = data.company;
-      document.getElementById('phone').textContent = data.phone;
-      document.getElementById('email').textContent = data.email;
-      document.getElementById('website').textContent = data.website;
-      document.getElementById('address').textContent = data.address;
-      document.getElementById('profileImage').src = data.profileImage;
-      document.getElementById('logo').src = data.logo;
-    })
-    .catch(err => {
-      document.getElementById('name').textContent = 'ERROR';
-      console.error(err);
-    });
-});
+// Load data from JSON
+fetch('contact.json')
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById('name').innerText =
+      data.firstName + " " + data.lastName;
+
+    document.getElementById('title').innerText = data.title;
+    document.getElementById('company').innerText = data.company;
+    document.getElementById('phone').innerText = data.phone;
+    document.getElementById('email').innerText = data.email;
+    document.getElementById('website').innerText = data.website;
+    document.getElementById('address').innerText = data.address;
+    document.getElementById('profileImage').src = data.profileImage;
+    document.getElementById('logo').src = data.logo;
+  })
+  .catch(err => {
+    alert("Error loading contact data");
+    console.error(err);
+  });
+
+// Save contact
+function saveContact() {
+  document.getElementById('previewCard').style.display = 'none';
+  document.getElementById('savingScreen').style.display = 'block';
+
+  const a = document.createElement('a');
+  a.href = 'contact.vcf';
+  a.download = 'contact.vcf';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  setTimeout(() => {
+    document.getElementById('savingScreen').innerHTML =
+      "Contact opened in your contacts app";
+  }, 2500);
+}
 </script>
 
 </body>
 </html>
-
 
