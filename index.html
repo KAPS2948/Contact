@@ -1,116 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Contact Card</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>Debug Contact</title>
+</head>
+<body>
 
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #eef2f6;
-  }
+<h1 id="name">Loading...</h1>
+<p id="title"></p>
+<p id="company"></p>
+<p id="phone"></p>
+<p id="email"></p>
+<p id="website"></p>
+<p id="address"></p>
+<img id="profileImage" width="150">
 
-  .card {
-    max-width: 420px;
-    margin: 40px auto;
-    background: #ffffff;
-    border-radius: 18px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-    overflow: hidden;
-    text-align: center;
-  }
-
-  .header {
-    background: linear-gradient(135deg, #1c3f60, #0f2438);
-    padding: 25px 20px 60px;
-    color: #fff;
-  }
-
-  .logo {
-    max-height: 40px;
-    margin-bottom: 10px;
-  }
-
-  .profile {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 5px solid #fff;
-    margin-top: -55px;
-  }
-
-  .body {
-    padding: 20px;
-    text-align: left;
-  }
-
-  .info {
-    margin: 10px 0;
-    font-size: 15px;
-  }
-
-  .info span {
-    font-weight: bold;
-    color: #1c3f60;
-  }
-
-  .btn {
-    margin-top: 20px;
-    padding: 15px;
-    background: #1c3f60;
-    color: #fff;
-    border-radius: 10px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 16px;
-  }
-
-  .saving {
-    display: none;
-    text-align: center;
-    padding: 60px;
-    font-size: 18px;
-    color: #1c3f60;
-  }
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-
   fetch('./contact.json')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('JSON fetch failed: ' + response.status);
-      }
-      return response.json();
-    })
+    .then(r => r.json())
     .then(data => {
-      console.log('JSON loaded successfully:', data);
-
       document.getElementById('name').textContent =
         data.firstName + " " + data.lastName;
-
       document.getElementById('title').textContent = data.title;
       document.getElementById('company').textContent = data.company;
       document.getElementById('phone').textContent = data.phone;
       document.getElementById('email').textContent = data.email;
       document.getElementById('website').textContent = data.website;
       document.getElementById('address').textContent = data.address;
-
       document.getElementById('profileImage').src = data.profileImage;
-
-      if (data.logo && document.getElementById('logo')) {
-        document.getElementById('logo').src = data.logo;
-      }
     })
-    .catch(error => {
-      console.error('ERROR:', error);
-      document.getElementById('name').textContent = 'Error loading contact';
+    .catch(err => {
+      document.getElementById('name').textContent = 'ERROR';
+      console.error(err);
     });
-
 });
 </script>
+
 </body>
 </html>
-
