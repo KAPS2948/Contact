@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('website').textContent = data.website;
       document.getElementById('address').textContent = data.address;
       document.getElementById('profileImage').src = data.profileImage;
+      document.getElementById('logo').src = data.logo;
     })
     .catch(err => {
       document.getElementById('name').textContent = 'ERROR';
@@ -39,3 +40,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </body>
 </html>
+
