@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Contact Preview</title>
+<title>Contact Card</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -16,16 +16,21 @@
     max-width: 420px;
     margin: 40px auto;
     background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
     overflow: hidden;
     text-align: center;
   }
 
   .header {
-    background: #1c3f60;
-    padding: 30px 20px 60px;
+    background: linear-gradient(135deg, #1c3f60, #0f2438);
+    padding: 25px 20px 60px;
     color: #fff;
+  }
+
+  .logo {
+    max-height: 40px;
+    margin-bottom: 10px;
   }
 
   .profile {
@@ -54,18 +59,19 @@
 
   .btn {
     margin-top: 20px;
-    padding: 14px;
+    padding: 15px;
     background: #1c3f60;
     color: #fff;
-    border-radius: 8px;
+    border-radius: 10px;
     text-align: center;
     cursor: pointer;
+    font-size: 16px;
   }
 
   .saving {
     display: none;
     text-align: center;
-    padding: 50px;
+    padding: 60px;
     font-size: 18px;
     color: #1c3f60;
   }
@@ -75,13 +81,14 @@
 <body>
 
 <!-- PREVIEW CARD -->
-<div class="card" id="previewCard">
+<div class="card" id="preview">
   <div class="header">
+    <img id="logo" class="logo" alt="Company Logo">
     <h2 id="name">Loading...</h2>
     <div id="title"></div>
   </div>
 
-  <img id="profileImage" class="profile" src="" alt="Profile Photo">
+  <img id="profileImage" class="profile">
 
   <div class="body">
     <div class="info"><span>Company:</span> <span id="company"></span></div>
@@ -90,23 +97,26 @@
     <div class="info"><span>Website:</span> <span id="website"></span></div>
     <div class="info"><span>Address:</span> <span id="address"></span></div>
 
-    <div class="btn" onclick="saveContact()">Save Contact</div>
+    <div class="btn" onclick="generateVCF()">Save Contact</div>
   </div>
 </div>
 
 <!-- SAVING SCREEN -->
-<div class="saving" id="savingScreen">
+<div class="saving" id="saving">
   Saving contact…<br>Please wait
 </div>
 
 <script>
-// Load data from JSON
+let contactData = {};
+
+// Load JSON
 fetch('contact.json')
   .then(res => res.json())
   .then(data => {
+    contactData = data;
+
     document.getElementById('name').innerText =
       data.firstName + " " + data.lastName;
-
     document.getElementById('title').innerText = data.title;
     document.getElementById('company').innerText = data.company;
     document.getElementById('phone').innerText = data.phone;
@@ -114,26 +124,39 @@ fetch('contact.json')
     document.getElementById('website').innerText = data.website;
     document.getElementById('address').innerText = data.address;
     document.getElementById('profileImage').src = data.profileImage;
-  })
-  .catch(err => {
-    alert("Error loading contact data");
-    console.error(err);
+    document.getElementById('logo').src = data.logo;
   });
 
-// Save contact
-function saveContact() {
-  document.getElementById('previewCard').style.display = 'none';
-  document.getElementById('savingScreen').style.display = 'block';
+// Generate VCF dynamically
+function generateVCF() {
+  document.getElementById('preview').style.display = 'none';
+  document.getElementById('saving').style.display = 'block';
+
+  const vcf = `
+BEGIN:VCARD
+VERSION:3.0
+N:${contactData.lastName};${contactData.firstName};;;
+FN:${contactData.firstName} ${contactData.lastName}
+ORG:${contactData.company}
+TITLE:${contactData.title}
+TEL;TYPE=CELL:${contactData.phone}
+EMAIL:${contactData.email}
+URL:${contactData.website}
+ADR;TYPE=WORK:;;${contactData.address}
+END:VCARD`.trim();
+
+  const blob = new Blob([vcf], { type: 'text/vcard' });
+  const url = URL.createObjectURL(blob);
 
   const a = document.createElement('a');
-  a.href = 'contact.vcf';
+  a.href = url;
   a.download = 'contact.vcf';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
 
   setTimeout(() => {
-    document.getElementById('savingScreen').innerHTML =
+    document.getElementById('saving').innerHTML =
       "Contact opened in your contacts app";
   }, 2500);
 }
