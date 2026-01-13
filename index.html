@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Contact Profile</title>
+<title>Contact Preview</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -28,22 +28,13 @@
     color: #fff;
   }
 
-  .profile-pic {
+  .profile {
     width: 110px;
     height: 110px;
     border-radius: 50%;
     object-fit: cover;
     border: 5px solid #fff;
     margin-top: -55px;
-  }
-
-  h2 {
-    margin: 12px 0 4px;
-  }
-
-  .title {
-    font-size: 14px;
-    opacity: 0.9;
   }
 
   .body {
@@ -62,27 +53,35 @@
   }
 
   .btn {
-    display: block;
-    margin-top: 15px;
+    margin-top: 20px;
     padding: 14px;
     background: #1c3f60;
     color: #fff;
-    text-decoration: none;
     border-radius: 8px;
     text-align: center;
+    cursor: pointer;
+  }
+
+  .saving {
+    display: none;
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+    color: #1c3f60;
   }
 </style>
 </head>
 
 <body>
 
-<div class="card">
+<!-- PREVIEW CARD -->
+<div class="card" id="previewCard">
   <div class="header">
     <h2 id="name">Loading...</h2>
-    <div class="title" id="title"></div>
+    <div id="title"></div>
   </div>
 
-  <img id="profileImage" class="profile-pic" src="" alt="Profile Photo">
+  <img id="profileImage" class="profile" src="" alt="Profile Photo">
 
   <div class="body">
     <div class="info"><span>Company:</span> <span id="company"></span></div>
@@ -91,12 +90,19 @@
     <div class="info"><span>Website:</span> <span id="website"></span></div>
     <div class="info"><span>Address:</span> <span id="address"></span></div>
 
-    <a class="btn" id="callBtn">Call Now</a>
+    <div class="btn" onclick="saveContact()">Save Contact</div>
   </div>
 </div>
+
+<!-- SAVING SCREEN -->
+<div class="saving" id="savingScreen">
+  Saving contact…<br>Please wait
+</div>
+
 <script>
+// Load data from JSON
 fetch('contact.json')
-  .then(response => response.json())
+  .then(res => res.json())
   .then(data => {
     document.getElementById('name').innerText =
       data.firstName + " " + data.lastName;
@@ -107,13 +113,30 @@ fetch('contact.json')
     document.getElementById('email').innerText = data.email;
     document.getElementById('website').innerText = data.website;
     document.getElementById('address').innerText = data.address;
-
     document.getElementById('profileImage').src = data.profileImage;
-    document.getElementById('callBtn').href = "tel:" + data.phone;
   })
-  .catch(error => {
-    console.error("Error loading JSON:", error);
+  .catch(err => {
+    alert("Error loading contact data");
+    console.error(err);
   });
+
+// Save contact
+function saveContact() {
+  document.getElementById('previewCard').style.display = 'none';
+  document.getElementById('savingScreen').style.display = 'block';
+
+  const a = document.createElement('a');
+  a.href = 'contact.vcf';
+  a.download = 'contact.vcf';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  setTimeout(() => {
+    document.getElementById('savingScreen').innerHTML =
+      "Contact opened in your contacts app";
+  }, 2500);
+}
 </script>
 
 </body>
