@@ -6,95 +6,100 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #eef2f6;
-  }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #eef2f6;
+}
 
-  .card {
-    max-width: 420px;
-    margin: 40px auto;
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-    overflow: hidden;
-    text-align: center;
-  }
+.card {
+  max-width: 420px;
+  margin: 40px auto;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  overflow: hidden;
+  text-align: center;
+}
 
-  .header {
-    background: #1c3f60;
-    padding: 30px 20px 60px;
-    color: #fff;
-  }
+.header {
+  background: #1c3f60;
+  padding: 20px 20px 70px;
+  color: #fff;
+  position: relative;
+}
 
-  .profilelogo {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    object-fit: cover;
-    background: #fff;
-    padding: 5px;
-    position: absolute;
-    border: 5px solid #fff;
-    top: 8px
-    left: 15px
-  }
+/* LOGO AT TOP */
+.profilelogo {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  padding: 5px;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
 
-  .profile {
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 5px solid #fff;
-    margin-top: -65px auto 0;
-    display: block;
-  }
+/* NAME + TITLE UPWARD */
+#name {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
 
-  .body {
-    padding: 20px;
-    text-align: left;
-  }
+#title {
+  font-size: 14px;
+  opacity: 0.9;
+}
 
-  .info {
-    margin: 10px 0;
-    font-size: 15px;
-  }
+/* PROFILE IMAGE CENTERED */
+.profile {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid #fff;
+  margin: -65px auto 0;
+  display: block;
+}
 
-  .info span {
-    font-weight: bold;
-    color: #1c3f60;
-  }
+.body {
+  padding: 20px;
+  text-align: left;
+}
 
-  .btn {
-    margin-top: 20px;
-    padding: 14px;
-    background: #1c3f60;
-    color: #fff;
-    border-radius: 8px;
-    text-align: center;
-    cursor: pointer;
-  }
+.info {
+  margin: 10px 0;
+  font-size: 15px;
+}
 
-  .saving {
-    display: none;
-    text-align: center;
-    padding: 50px;
-    font-size: 18px;
-    color: #1c3f60;
-  }
+.info span:first-child {
+  font-weight: bold;
+  color: #1c3f60;
+}
+
+.btn {
+  margin-top: 20px;
+  padding: 14px;
+  background: #1c3f60;
+  color: #fff;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+}
 </style>
 </head>
 
 <body>
 
-<!-- PREVIEW CARD -->
-<div class="card" id="previewCard">
+<div class="card">
   <div class="header">
+    <img id="logo" class="profilelogo" src="" alt="Company Logo">
     <h2 id="name">Loading...</h2>
     <div id="title"></div>
   </div>
-  <img id="logo" class="profilelogo" width= "25" src="" alt="Company Logo">
+
   <img id="profileImage" class="profile" src="" alt="Profile Photo">
 
   <div class="body">
@@ -104,41 +109,29 @@
     <div class="info"><span>Website:</span> <span id="website"></span></div>
     <div class="info"><span>Address:</span> <span id="address"></span></div>
 
-    <div class="btn" onclick="saveContact()">Save Contact</div>
+    <div class="btn">Save Contact</div>
   </div>
 </div>
 
-<!-- SAVING SCREEN -->
-<div class="saving" id="savingScreen">
-  Saving contact…<br>Please wait
-</div>
-
 <script>
-// Load data from JSON
 fetch('contact.json')
   .then(res => res.json())
   .then(data => {
-    document.getElementById('name').innerText =
-      data.firstName + " " + data.lastName;
-
-    document.getElementById('title').innerText = data.title;
-    document.getElementById('company').innerText = data.company;
-    document.getElementById('phone').innerText = data.phone;
-    document.getElementById('email').innerText = data.email;
-    document.getElementById('website').innerText = data.website;
-    document.getElementById('address').innerText = data.address;
-    document.getElementById('profileImage').src = data.profileImage;
-    document.getElementById('logo').src = data.logo;
-  })
-  .catch(err => {
-    alert("Error loading contact data");
-    console.error(err);
+    name.innerText = data.firstName + " " + data.lastName;
+    title.innerText = data.title;
+    company.innerText = data.company;
+    phone.innerText = data.phone;
+    email.innerText = data.email;
+    website.innerText = data.website;
+    address.innerText = data.address;
+    profileImage.src = data.profileImage;
+    logo.src = data.logo;
   });
-
 </script>
 
 </body>
 </html>
+
 
 
 
